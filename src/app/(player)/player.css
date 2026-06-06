@@ -1,0 +1,107 @@
+/* Eden PZ — Player dark cinematic design system */
+/* Separate from admin theme. Applied only to (player) route group. */
+
+:root {
+  /* Brand palette (oklch) */
+  --player-background: oklch(0.18 0.008 165);
+  --player-foreground: oklch(0.92 0.013 90);
+  --player-card: oklch(0.23 0.01 165);
+  --player-card-foreground: oklch(0.92 0.013 90);
+  --player-card-elevated: oklch(0.27 0.012 165);
+  --player-primary: oklch(0.78 0.16 128);
+  --player-primary-foreground: oklch(0.18 0.008 165);
+  --player-secondary: oklch(0.78 0.13 80);
+  --player-secondary-foreground: oklch(0.18 0.008 165);
+  --player-muted: oklch(0.27 0.012 165);
+  --player-muted-foreground: oklch(0.71 0.012 85);
+  --player-border: oklch(0.32 0.013 160);
+  --player-danger: oklch(0.49 0.13 27);
+  --player-danger-foreground: oklch(0.96 0.01 90);
+}
+
+.player-theme {
+  background-color: var(--player-background);
+  color: var(--player-foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse at 20% -10%, color-mix(in oklab, var(--player-primary) 8%, transparent), transparent 55%),
+    radial-gradient(ellipse at 90% 110%, color-mix(in oklab, var(--player-secondary) 6%, transparent), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.player-theme * {
+  border-color: var(--player-border);
+}
+
+.player-theme h1,
+.player-theme h2,
+.player-theme h3,
+.player-theme h4 {
+  font-family: 'Oswald', 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* Container */
+.container-eden {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 80rem;
+}
+
+/* Text colors */
+.text-player-foreground { color: var(--player-foreground); }
+.text-player-primary { color: var(--player-primary); }
+.text-player-secondary { color: var(--player-secondary); }
+.text-player-muted { color: var(--player-muted-foreground); }
+.text-player-danger { color: var(--player-danger-foreground); }
+
+/* Background colors */
+.bg-player-background { background-color: var(--player-background); }
+.bg-player-card { background-color: var(--player-card); }
+.bg-player-card-elevated { background-color: var(--player-card-elevated); }
+.bg-player-primary { background-color: var(--player-primary); }
+.bg-player-secondary { background-color: var(--player-secondary); }
+.bg-player-muted { background-color: var(--player-muted); }
+.bg-player-danger { background-color: var(--player-danger); }
+
+/* Border colors */
+.border-player { border-color: var(--player-border); }
+.border-player-primary { border-color: color-mix(in oklab, var(--player-primary) 50%, transparent); }
+
+/* Scan-line cinematic texture */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.015) 0px,
+    rgba(255,255,255,0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Prose */
+.prose-eden {
+  color: var(--player-foreground);
+  line-height: 1.7;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.prose-eden h2 { font-family: 'Oswald', 'Inter', system-ui, sans-serif; font-size: 1.5rem; margin: 1.75rem 0 0.75rem; color: var(--player-foreground); }
+.prose-eden h3 { font-family: 'Oswald', 'Inter', system-ui, sans-serif; font-size: 1.2rem; margin: 1.25rem 0 0.5rem; }
+.prose-eden p { margin: 0.75rem 0; color: var(--player-foreground); }
+.prose-eden ul { list-style: disc; padding-left: 1.25rem; margin: 0.75rem 0; color: var(--player-muted-foreground); }
+.prose-eden li { margin: 0.25rem 0; }
+.prose-eden a { color: var(--player-primary); text-decoration: underline; text-underline-offset: 3px; }
+.prose-eden code { font-family: 'JetBrains Mono', ui-monospace, monospace; background: var(--player-muted); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.9em; }
+.prose-eden strong { color: var(--player-foreground); }
+.prose-eden img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1.5rem 0; }
+.prose-eden iframe { max-width: 100%; aspect-ratio: 16 / 9; border-radius: 0.5rem; margin: 1.5rem 0; }
