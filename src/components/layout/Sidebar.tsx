@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity, FolderOpen } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 
 import Image from 'next/image'
@@ -12,9 +12,10 @@ const navigation = [
   { name: 'Tổng quan', href: '/admin', icon: LayoutDashboard },
   { name: 'Dự án', href: '/admin/projects', icon: FolderKanban },
   { name: 'Công việc', href: '/admin/tasks', icon: CheckSquare },
-  { name: 'Nhân sự', href: '/admin/users', icon: Users },
+  { name: 'Nhân sự', href: '/admin/users', icon: Users, adminOnly: true },
   { name: 'Báo cáo', href: '/admin/reports', icon: FileBarChart },
   { name: 'Nội dung', href: '/admin/content', icon: FileText },
+  { name: 'Media Hub', href: '/admin/media', icon: FolderOpen, adminOnly: true },
   { name: 'Server Logs', href: '/admin/logs', icon: Activity },
 ]
 
@@ -28,7 +29,7 @@ export default function Sidebar({
   const pathname = usePathname()
 
   const filteredNav = navigation.filter(item => {
-    if (item.name === 'Nhân sự' && role !== 'OWNER' && role !== 'ADMIN') return false
+    if ((item as any).adminOnly && role !== 'OWNER' && role !== 'ADMIN') return false
     return true
   })
 

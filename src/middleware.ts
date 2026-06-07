@@ -14,6 +14,7 @@ const publicPathPrefixes = [
   '/rp-guide',
   '/sitemap.xml',
   '/api/cms',
+  '/api/public',
 ]
 
 function isPublicPath(path: string): boolean {
