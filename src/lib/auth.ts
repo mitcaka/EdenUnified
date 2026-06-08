@@ -3,8 +3,7 @@ import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
 function getSecretKey() {
-  // Bỏ qua process.env tạm thời để kiểm tra lỗi bất đồng bộ môi trường
-  const secret = 'eden-unified-secret-key-change-in-production'
+  const secret = process.env.JWT_SECRET || 'eden-plan-super-secret-key-for-mvp'
   return new TextEncoder().encode(secret)
 }
 
