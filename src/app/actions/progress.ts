@@ -70,7 +70,7 @@ export async function submitTaskForTest(formData: FormData) {
   }
 
   if (task.status !== 'DOING' && task.status !== 'TODO' && task.status !== 'BACKLOG') {
-    throw new Error('Chỉ có thể gửi Test khi đang làm (DOING)')
+    throw new Error('Chỉ có thể gửi Test khi chưa hoàn thành (TODO, DOING, BACKLOG)')
   }
 
   await prisma.$transaction(async (tx) => {
@@ -125,6 +125,10 @@ export async function submitTaskForReview(formData: FormData) {
     throw new Error('Bạn không có quyền cập nhật công việc này')
   }
 
+  if (task.status !== 'DOING' && task.status !== 'TODO' && task.status !== 'BACKLOG') {
+    throw new Error('Chỉ có thể gửi Review khi chưa hoàn thành (TODO, DOING, BACKLOG)')
+  }
+
   await prisma.$transaction(async (tx) => {
     await tx.task.update({
       where: { id: taskId },
@@ -169,11 +173,16 @@ export async function reviewTaskDone(formData: FormData) {
   const pointActual = parseInt(pointActualStr || '0', 10)
 
   if (!taskId) throw new Error('Mã công việc không hợp lệ')
+  if (isNaN(pointActual) || pointActual < 0) throw new Error('Điểm thực tế không hợp lệ')
 
   const { session, task, isOwnerOrAdmin, isReviewer } = await checkPermission(taskId)
 
   if (!isOwnerOrAdmin && !isReviewer) {
     throw new Error('Bạn không có quyền duyệt công việc này')
+  }
+
+  if (task.status !== 'NEED_REVIEW' && task.status !== 'NEED_TEST') {
+    throw new Error('Công việc không trong trạng thái chờ duyệt')
   }
 
   await prisma.$transaction(async (tx) => {
@@ -231,6 +240,10 @@ export async function requestTaskChanges(formData: FormData) {
 
   if (!isOwnerOrAdmin && !isReviewer) {
     throw new Error('Bạn không có quyền duyệt công việc này')
+  }
+
+  if (task.status !== 'NEED_REVIEW' && task.status !== 'NEED_TEST') {
+    throw new Error('Công việc không trong trạng thái chờ duyệt')
   }
 
   await prisma.$transaction(async (tx) => {

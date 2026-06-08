@@ -159,13 +159,13 @@ export default function EvidenceUpload({
             {uploadingCount > 0 ? (
               <><Loader2 size={15} className="animate-spin" /> Đang upload {uploadingCount} file...</>
             ) : (
-              <><Upload size={15} /> Upload ảnh/video</>
+              <><Upload size={15} /> Upload ảnh (Tạm đóng Video)</>
             )}
             <input
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept="image/*,video/*"
+              accept="image/*"
               multiple
               onChange={handleFileChange}
               disabled={uploadingCount > 0}
@@ -200,7 +200,7 @@ export default function EvidenceUpload({
         )}
 
         <p className="text-[11px] text-gray-400 mt-2">
-          Hỗ trợ: JPG, PNG, GIF, WEBP, MP4, WEBM, MOV · Kéo thả hoặc Ctrl+V để dán ảnh
+          Hỗ trợ: JPG, PNG, GIF, WEBP · Kéo thả hoặc Ctrl+V để dán ảnh (Video hiện đang bảo trì)
         </p>
       </div>
 

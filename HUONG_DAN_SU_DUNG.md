@@ -67,4 +67,13 @@ Tài liệu này hướng dẫn cách vận hành hệ thống TaskForge dựa t
 
 ---
 
+## 4. Cấu hình bảo mật (Dành cho Kỹ thuật/DevOps)
+
+**Cảnh báo quan trọng khi đưa hệ thống lên Production (Môi trường thực tế):**
+- Bắt buộc phải khởi tạo biến môi trường `JWT_SECRET` chứa một chuỗi ký tự ngẫu nhiên, dài và phức tạp (VD: `JWT_SECRET="c2VjcmV0LWtleS1kZXBsb3ltZW50..."`).
+- Hệ thống sẽ **từ chối khởi động và báo lỗi** nếu bạn sử dụng phiên bản Production (`npm run build` & `npm start`) mà không có biến `JWT_SECRET` hoặc dùng lại chuỗi mặc định. Điều này nhằm ngăn chặn triệt để rủi ro hacker giả mạo phiên đăng nhập.
+- Cookie phiên làm việc mặc định kích hoạt cờ `Secure` trên Production, yêu cầu bắt buộc chạy hệ thống qua HTTPS.
+
+---
+
 *Tài liệu được kết xuất tự động từ hệ thống TaskForge.*

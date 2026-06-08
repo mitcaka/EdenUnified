@@ -53,7 +53,7 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
         if (!response.ok) throw new Error('Upload thất bại')
 
         const data = await response.json()
-        const url = data.url
+        const imageUrl = data.url
 
         // Get quill instance through container
         const container = document.getElementById(editorId)
@@ -63,10 +63,10 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
           const sel = window.getSelection()
           if (sel && sel.rangeCount > 0) {
             const img = document.createElement('img')
-            img.src = url
+            img.src = imageUrl
             sel.getRangeAt(0).insertNode(img)
           } else {
-            qlEditor.innerHTML += `<img src="${url}" />`
+            qlEditor.innerHTML += `<img src="${imageUrl}" />`
           }
           // Trigger onChange by dispatching input event
           qlEditor.dispatchEvent(new Event('input', { bubbles: true }))
@@ -86,7 +86,7 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
         [{ 'header': [1, 2, 3, 4, false] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['link', 'image', 'video'],
+        ['link', 'image'],
         ['clean']
       ],
       handlers: {

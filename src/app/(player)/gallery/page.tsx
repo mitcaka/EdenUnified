@@ -11,13 +11,23 @@ export default async function GalleryPage() {
     orderBy: { sortOrder: 'asc' },
   })
 
-  const items = media.map(m => ({
-    id: m.id, title: m.title, description: m.description,
-    type: m.type as 'image' | 'video',
-    mediaUrl: m.mediaUrl, thumbnailUrl: m.thumbnailUrl,
-    tags: m.tags ? JSON.parse(m.tags) as string[] : [],
-    isFeatured: m.isFeatured, sortOrder: m.sortOrder,
-  }))
+  const items = media.map(m => {
+    let parsedTags: string[] = []
+    if (m.tags) {
+      try {
+        parsedTags = JSON.parse(m.tags)
+      } catch (e) {
+        parsedTags = m.tags.split(',').map(s => s.trim()).filter(Boolean)
+      }
+    }
+    return {
+      id: m.id, title: m.title, description: m.description,
+      type: m.type as 'image' | 'video',
+      mediaUrl: m.mediaUrl, thumbnailUrl: m.thumbnailUrl,
+      tags: parsedTags,
+      isFeatured: m.isFeatured, sortOrder: m.sortOrder,
+    }
+  })
 
   return (
     <PageShell>

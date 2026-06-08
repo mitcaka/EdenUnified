@@ -3,6 +3,9 @@ import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
 const secretKey = process.env.JWT_SECRET || 'eden-plan-super-secret-key-for-mvp'
+if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'eden-plan-super-secret-key-for-mvp')) {
+  throw new Error('Cảnh báo bảo mật: Phải thiết lập biến môi trường JWT_SECRET trong môi trường Production!')
+}
 const key = new TextEncoder().encode(secretKey)
 
 export type SessionPayload = {
@@ -59,7 +62,7 @@ export async function createSession(payload: SessionPayload) {
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' && process.env.REQUIRE_HTTPS === 'true',
+    secure: process.env.NODE_ENV === 'production',
     expires,
     sameSite: 'lax',
     path: '/',

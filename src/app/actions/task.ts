@@ -113,7 +113,7 @@ export async function updateTask(id: string, formData: FormData) {
     finalData = { ...data }
   } else if (isAssignee) {
     // MEMBER validation
-    if (data.status === 'CANCELLED' || data.status === 'BACKLOG') {
+    if ((data.status === 'CANCELLED' || data.status === 'BACKLOG') && data.status !== task.status) {
       throw new Error('Bạn không có quyền Hủy (Cancel) hoặc đẩy công việc về Backlog')
     }
     if ((task.status === 'DONE' || task.status === 'CANCELLED') && data.status !== task.status) {

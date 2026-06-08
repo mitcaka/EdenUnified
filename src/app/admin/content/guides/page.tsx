@@ -28,6 +28,7 @@ export default async function GuidesAdminPage() {
                 <td className="px-4 py-3 text-gray-500">{g.category.name}</td>
                 <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs ${g.difficulty === 'beginner' ? 'bg-green-100 text-green-700' : g.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{g.difficulty}</span></td>
                 <td className="px-4 py-3 text-right"><div className="flex gap-1 justify-end">
+                  <Link href={`/admin/content/guides/${g.id}/edit`} className="p-1.5 rounded hover:bg-blue-50 text-blue-600"><Edit size={14} /></Link>
                   <form action={deleteGuide}><input type="hidden" name="id" value={g.id} /><button type="submit" className="p-1.5 rounded hover:bg-red-50 text-red-500"><Trash2 size={14} /></button></form>
                 </div></td>
               </tr>

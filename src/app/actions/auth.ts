@@ -23,13 +23,13 @@ export async function login(formData: FormData) {
   })
 
   if (!user || !user.isActive) {
-    return { error: 'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa' }
+    return { error: 'Tài khoản hoặc mật khẩu không chính xác, hoặc đã bị vô hiệu hóa' }
   }
 
   const passwordMatch = await bcrypt.compare(password, user.passwordHash)
 
   if (!passwordMatch) {
-    return { error: 'Invalid credentials' }
+    return { error: 'Tài khoản hoặc mật khẩu không chính xác, hoặc đã bị vô hiệu hóa' }
   }
 
   await createSession({

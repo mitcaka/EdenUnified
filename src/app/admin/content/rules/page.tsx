@@ -1,6 +1,7 @@
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { createRule, deleteRule, createRuleCategory, deleteRuleCategory } from '@/app/actions/cms'
-import { Plus, Trash2, FolderPlus } from 'lucide-react'
+import { Plus, Trash2, FolderPlus, Edit } from 'lucide-react'
 
 export default async function RulesAdminPage() {
   const [categories, rules] = await Promise.all([
@@ -86,12 +87,17 @@ export default async function RulesAdminPage() {
                   </div>
                   <p className="text-xs text-gray-500 mt-1 line-clamp-2">{r.content}</p>
                 </div>
-                <form action={deleteRule}>
-                  <input type="hidden" name="id" value={r.id} />
-                  <button type="submit" className="p-1.5 rounded hover:bg-red-100 text-red-400 transition-colors">
-                    <Trash2 size={14} />
-                  </button>
-                </form>
+                <div className="flex gap-1 justify-end">
+                  <Link href={`/admin/content/rules/${r.id}/edit`} className="p-1.5 rounded hover:bg-blue-50 text-blue-600">
+                    <Edit size={14} />
+                  </Link>
+                  <form action={deleteRule}>
+                    <input type="hidden" name="id" value={r.id} />
+                    <button type="submit" className="p-1.5 rounded hover:bg-red-100 text-red-400 transition-colors">
+                      <Trash2 size={14} />
+                    </button>
+                  </form>
+                </div>
               </div>
             ))}
             {catRules.length === 0 && <p className="text-center py-6 text-gray-400 text-sm italic">Chưa có luật nào trong danh mục này.</p>}
