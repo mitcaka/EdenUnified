@@ -3,7 +3,11 @@ import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
 function getSecretKey() {
-  const secret = process.env.JWT_SECRET || 'eden-plan-super-secret-key-for-mvp'
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    console.warn('[AUTH WARNING] JWT_SECRET chưa được cấu hình trong .env, đang dùng key mặc định! Đây là lỗi bảo mật nghiêm trọng nếu chạy production.')
+    return new TextEncoder().encode('eden-unified-secret-key-change-in-production')
+  }
   return new TextEncoder().encode(secret)
 }
 
@@ -62,7 +66,9 @@ export async function createSession(payload: SessionPayload) {
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    // Chỉ bật secure khi website chạy HTTPS thực sự (set COOKIE_SECURE=true trong .env)
+    // KHÔNG dùng NODE_ENV vì server có thể chạy production mode nhưng vẫn qua HTTP
+    secure: process.env.COOKIE_SECURE === 'true',
     expires,
     sameSite: 'lax',
     path: '/',
