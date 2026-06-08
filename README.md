@@ -20,10 +20,6 @@
    npx tsx prisma/seed.ts
    ```
 
-Tài khoản mặc định:
-- **Tài khoản:** `admin`
-- **Mật khẩu:** `admin123`
-
 ## Chạy ứng dụng trên Production
 1. Bạn chỉ cần chạy file `start.bat`. File này sẽ tự động build ứng dụng và khởi chạy trên port `3005`.
    *(Nếu bạn cần chạy trên port `3001` như dự định ban đầu, bạn có thể chuột phải vào file `start.bat` -> Edit, và sửa dòng `set PORT=3005` thành `set PORT=3001`)*.
