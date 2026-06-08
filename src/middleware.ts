@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { decrypt } from '@/lib/auth'
 
 // Các path mà người chơi (public) được truy cập tự do
 const publicPathPrefixes = [
@@ -44,13 +43,12 @@ export async function middleware(request: NextRequest) {
 
   // Các path còn lại (dashboard, admin, logs, content) cần đăng nhập
   const cookie = request.cookies.get('session')?.value
-  const session = cookie ? await decrypt(cookie) : null
 
-  if (!session && path !== '/login') {
+  if (!cookie && path !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (session && path === '/login') {
+  if (cookie && path === '/login') {
     return NextResponse.redirect(new URL('/admin', request.url))
   }
 
