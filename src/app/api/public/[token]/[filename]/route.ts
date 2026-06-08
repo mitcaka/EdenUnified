@@ -3,10 +3,10 @@ import { WebdavAdapter } from '@/lib/webdav-adapter'
 
 export async function GET(
   request: Request,
-  { params }: { params: { token: string; filename: string } }
+  { params }: { params: Promise<{ token: string; filename: string }> }
 ) {
   try {
-    const { token, filename } = params
+    const { token, filename } = await params
     
     // Khởi tạo WebdavAdapter chỉ để lấy được config NC_BASE
     const webdav = new WebdavAdapter()
