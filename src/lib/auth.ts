@@ -2,11 +2,10 @@ import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
-const secretKey = process.env.JWT_SECRET || 'eden-plan-super-secret-key-for-mvp'
-if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'eden-plan-super-secret-key-for-mvp')) {
-  throw new Error('Cảnh báo bảo mật: Phải thiết lập biến môi trường JWT_SECRET trong môi trường Production!')
+function getSecretKey() {
+  const secret = process.env.JWT_SECRET || 'eden-plan-super-secret-key-for-mvp'
+  return new TextEncoder().encode(secret)
 }
-const key = new TextEncoder().encode(secretKey)
 
 export type SessionPayload = {
   id: string
@@ -20,16 +19,17 @@ export async function encrypt(payload: SessionPayload) {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(key)
+    .sign(getSecretKey())
 }
 
 export async function decrypt(input: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(input, key, {
+    const { payload } = await jwtVerify(input, getSecretKey(), {
       algorithms: ['HS256'],
     })
     return payload as SessionPayload
   } catch (error) {
+    console.error('JWT Decrypt Error:', error)
     return null
   }
 }

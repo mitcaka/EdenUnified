@@ -26,9 +26,6 @@ export default function LoginPage() {
             {BRAND.tagline}
           </p>
         </div>
-        <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg text-xs text-blue-700 text-center">
-          <strong>Lưu ý:</strong> Vui lòng đổi mật khẩu ngay nếu bạn đang dùng tài khoản mặc định (admin/admin123).
-        </div>
         <form className="mt-2 space-y-4" action={action}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
