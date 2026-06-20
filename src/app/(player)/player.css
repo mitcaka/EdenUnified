@@ -91,10 +91,10 @@
 .prose-eden {
   color: var(--player-foreground);
   line-height: 1.8;
-  /* Chỉ wrap khi không còn cách nào khác (URL dài, code không có space) */
-  overflow-wrap: anywhere;
-  word-break: normal;       /* Không cắt giữa từ tiếng Việt */
-  hyphens: none;            /* Tắt gạch nối tự động */
+  white-space: normal;          /* Đảm bảo whitespace được collapse bình thường */
+  word-break: normal;           /* Không ngắt giữa từ */
+  overflow-wrap: break-word;    /* Chỉ ngắt khi cả từ không vừa dòng (URL dài, v.v.) */
+  hyphens: none;                /* Tắt gạch nối tự động */
 }
 .prose-eden h2 { font-family: 'Oswald', 'Inter', system-ui, sans-serif; font-size: 1.5rem; margin: 1.75rem 0 0.75rem; color: var(--player-foreground); }
 .prose-eden h3 { font-family: 'Oswald', 'Inter', system-ui, sans-serif; font-size: 1.2rem; margin: 1.25rem 0 0.5rem; }
