@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity, FolderOpen } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity, FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 
 import Image from 'next/image'
@@ -21,10 +21,14 @@ const navigation = [
 
 export default function Sidebar({ 
   role,
-  onNavigate 
+  onNavigate,
+  isCollapsed = false,
+  onToggleCollapse
 }: { 
   role: string
   onNavigate?: () => void
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }) {
   const pathname = usePathname()
 
@@ -34,13 +38,22 @@ export default function Sidebar({
   })
 
   return (
-    <div className="flex h-full w-64 flex-col border-r border-gray-200 bg-slate-50 shadow-sm">
-      <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-5">
-        <Image src="/logo.png" alt="Logo" width={32} height={32} />
-        <div className="flex flex-col">
-          <h1 className="text-[17px] font-black tracking-tight text-slate-900 leading-none">{BRAND.name}</h1>
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{BRAND.sidebarSubtitle}</span>
+    <div className={`flex h-full flex-col border-r border-gray-200 bg-slate-50 shadow-sm transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+      <div className={`flex h-16 items-center border-b border-gray-200 ${isCollapsed ? 'justify-center px-0' : 'justify-between px-5'}`}>
+        <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
+          <Image src="/logo.png" alt="Logo" width={32} height={32} className="shrink-0" />
+          {!isCollapsed && (
+            <div className="flex flex-col overflow-hidden">
+              <h1 className="text-[17px] font-black tracking-tight text-slate-900 leading-none truncate">{BRAND.name}</h1>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider truncate">{BRAND.sidebarSubtitle}</span>
+            </div>
+          )}
         </div>
+        {!isCollapsed && onToggleCollapse && (
+          <button onClick={onToggleCollapse} className="text-gray-400 hover:text-gray-600 hidden md:block" title="Thu gọn">
+            <ChevronLeft size={20} />
+          </button>
+        )}
       </div>
       <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
         {filteredNav.map((item) => {
@@ -50,14 +63,17 @@ export default function Sidebar({
               key={item.name}
               href={item.href}
               onClick={onNavigate}
-              className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${
+              title={isCollapsed ? item.name : undefined}
+              className={`group flex items-center rounded-xl transition-all duration-200 ${
+                isCollapsed ? 'justify-center p-3' : 'gap-3 px-3 py-2.5'
+              } text-sm font-semibold ${
                 isActive
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
-              <item.icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
-              {item.name}
+              <item.icon className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'} ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
+              {!isCollapsed && <span className="truncate">{item.name}</span>}
             </Link>
           )
         })}
@@ -67,24 +83,40 @@ export default function Sidebar({
         <Link
           href="/admin/profile"
           onClick={onNavigate}
-          className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${
+          title={isCollapsed ? 'Hồ sơ cá nhân' : undefined}
+          className={`group flex items-center rounded-xl transition-all duration-200 ${
+            isCollapsed ? 'justify-center p-3' : 'w-full gap-3 px-3 py-2.5'
+          } text-sm font-semibold ${
             pathname === '/admin/profile'
               ? 'bg-blue-50 text-blue-600'
               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
           }`}
         >
-          <Settings className={`h-5 w-5 ${pathname === '/admin/profile' ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-600'}`} />
-          Hồ sơ cá nhân
+          <Settings className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'} ${pathname === '/admin/profile' ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-600'}`} />
+          {!isCollapsed && <span className="truncate">Hồ sơ cá nhân</span>}
         </Link>
-        <form action={logout}>
+        <form action={logout} className="w-full">
           <button
             type="submit"
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition-all duration-200 hover:bg-red-50 hover:text-red-600"
+            title={isCollapsed ? 'Đăng xuất' : undefined}
+            className={`group flex items-center rounded-xl transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-600 ${
+              isCollapsed ? 'justify-center p-3 w-full' : 'w-full gap-3 px-3 py-2.5'
+            } text-sm font-semibold`}
           >
-            <LogOut className="h-5 w-5 text-gray-400 group-hover:text-red-500" />
-            Đăng xuất
+            <LogOut className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'} text-gray-400 group-hover:text-red-500`} />
+            {!isCollapsed && <span className="truncate">Đăng xuất</span>}
           </button>
         </form>
+
+        {isCollapsed && onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            title="Mở rộng"
+            className="group flex items-center justify-center rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200 p-3 w-full text-sm font-semibold mt-2 hidden md:flex"
+          >
+            <ChevronRight className="h-6 w-6 text-gray-400 group-hover:text-gray-600 shrink-0" />
+          </button>
+        )}
       </div>
     </div>
   )

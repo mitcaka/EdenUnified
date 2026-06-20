@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
@@ -14,6 +14,20 @@ export default function DashboardShell({
   children: React.ReactNode 
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('adminSidebarCollapsed')
+    if (saved === 'true') {
+      setIsCollapsed(true)
+    }
+  }, [])
+
+  const handleToggleCollapse = () => {
+    const newState = !isCollapsed
+    setIsCollapsed(newState)
+    localStorage.setItem('adminSidebarCollapsed', String(newState))
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 text-gray-900 relative">
@@ -27,11 +41,16 @@ export default function DashboardShell({
       
       {/* Sidebar */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-slate-50 transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 transform bg-slate-50 transition-all duration-300 ease-in-out md:static md:translate-x-0 flex-shrink-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } ${isCollapsed ? 'w-20' : 'w-64'}`}
       >
-        <Sidebar role={role} onNavigate={() => setIsSidebarOpen(false)} />
+        <Sidebar 
+          role={role} 
+          onNavigate={() => setIsSidebarOpen(false)} 
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+        />
       </div>
 
       {/* Main Content */}
