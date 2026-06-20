@@ -5,6 +5,7 @@ import { PageShell } from '@/components/player/PlayerComponents'
 import TableOfContents from '@/components/player/TableOfContents'
 import RelatedGuidesWidget from '@/components/player/RelatedGuidesWidget'
 import { ArrowLeft } from 'lucide-react'
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import type { Metadata } from 'next'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -61,7 +62,7 @@ export default async function GuideDetailPage({ params }: Props) {
             </h1>
             <p className="mt-5 text-lg text-player-muted leading-relaxed font-medium">{guide.excerpt}</p>
             <div className="w-full h-px bg-player-border mt-8 mb-8" />
-            <div className="prose-eden" dangerouslySetInnerHTML={{ __html: guide.content }} />
+            <div className="prose-eden" dangerouslySetInnerHTML={{ __html: sanitizeHtml(guide.content) }} />
           </article>
         </div>
 

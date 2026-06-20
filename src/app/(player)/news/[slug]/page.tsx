@@ -5,6 +5,7 @@ import { PageShell } from '@/components/player/PlayerComponents'
 import TableOfContents from '@/components/player/TableOfContents'
 import LatestNewsWidget from '@/components/player/LatestNewsWidget'
 import { ArrowLeft } from 'lucide-react'
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import type { Metadata } from 'next'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -43,7 +44,7 @@ export default async function NewsDetailPage({ params }: Props) {
             <h1 className="text-4xl md:text-5xl uppercase tracking-wide text-player-foreground leading-tight" style={{ fontFamily: "'Oswald'" }}>{post.title}</h1>
             <p className="mt-5 text-lg text-player-muted leading-relaxed font-medium">{post.excerpt}</p>
             <div className="w-full h-px bg-player-border mt-8 mb-8" />
-            <div className="prose-eden" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="prose-eden" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
           </article>
         </div>
 
