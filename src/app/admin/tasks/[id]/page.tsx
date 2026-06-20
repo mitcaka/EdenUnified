@@ -250,14 +250,15 @@ function EvidenceDisplay({ evidenceUrls }: { evidenceUrls: string }) {
   const links = evidenceUrls.split('\n').map(l => l.trim()).filter(Boolean)
   if (links.length === 0) return null
 
-  const isImage = (url: string) => {
-    const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
-    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
-      || (url.includes('/api/media/') && !isVideo(url))
-  }
   const isVideo = (url: string) => {
     const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
     return ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
+  }
+  const isImage = (url: string) => {
+    const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
+    // BUG FIX: thêm dấu ngoặc để tránh operator precedence sai (&& chạy trước ||)
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
+      || (url.includes('/api/media/') && !isVideo(url))
   }
 
   const images = links.filter(isImage)

@@ -44,35 +44,34 @@ export async function GET(
     const webdav = new WebdavAdapter()
 
     if (isVideo) {
-      // Video streaming with Range header support
+      // Video streaming với Range header support — pipe trực tiếp, không buffer vào RAM
       const rangeHeader = request.headers.get('range') || undefined
       const upstreamResponse = await webdav.downloadStream(remotePath, rangeHeader)
 
-      // Pipe response headers relevant to range/content
       const headers: Record<string, string> = {
         'Content-Type': contentType,
         'Accept-Ranges': 'bytes',
         'Cache-Control': 'public, max-age=3600',
-        'Content-Encoding': 'identity', // Prevent Next.js from compressing video
+        'Content-Encoding': 'identity', // Ngăn Next.js nén video
       }
 
+      // Chuyển tiếp headers quan trọng từ Nextcloud
       const contentLength = upstreamResponse.headers.get('content-length')
       const contentRange = upstreamResponse.headers.get('content-range')
       if (contentLength) headers['Content-Length'] = contentLength
       if (contentRange) headers['Content-Range'] = contentRange
 
-      // Tải nội dung stream/chunk vào memory buffer trước khi gửi để tránh lỗi đứt luồng của Next.js
-      const arrayBuffer = await upstreamResponse.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
+      // Pipe stream trực tiếp — không buffer vào RAM
+      // Trả đúng status: 206 nếu có Range request, 200 nếu không
+      const status = rangeHeader && upstreamResponse.status === 206 ? 206 : upstreamResponse.status
 
-      // Stream body trực tiếp bằng NextResponse với Buffer
-      return new NextResponse(new Uint8Array(buffer), {
-        status: upstreamResponse.status,
+      return new NextResponse(upstreamResponse.body, {
+        status,
         headers,
       })
     }
 
-    // For non-video files, buffer (images etc.)
+    // Với file không phải video (ảnh, v.v.) — buffer bình thường vì nhỏ
     const buffer = await webdav.downloadBuffer(remotePath)
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
@@ -85,3 +84,4 @@ export async function GET(
     return new NextResponse('File not found or error fetching', { status: error.status || 500 })
   }
 }
+

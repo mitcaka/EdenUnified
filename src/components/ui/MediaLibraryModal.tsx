@@ -11,8 +11,14 @@ type MediaLibraryModalProps = {
   folder?: string
 }
 
+function isVideoFile(name: string, contentType?: string): boolean {
+  if (contentType?.startsWith('video/')) return true
+  const ext = name.split('.').pop()?.toLowerCase() || ''
+  return ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
+}
+
 export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 'CMS_Media' }: MediaLibraryModalProps) {
-  const [files, setFiles] = useState<{ name: string; url: string }[]>([])
+  const [files, setFiles] = useState<{ name: string; url: string; contentType?: string }[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null)
@@ -44,7 +50,7 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
     if (!file) return
 
     setIsUploading(true)
-    const toastId = toast.loading('Đang tải ảnh lên Cloud...')
+    const toastId = toast.loading('Đang tải media lên Cloud...')
 
     const formData = new FormData()
     formData.append('file', file)
@@ -59,7 +65,7 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
       if (!res.ok) throw new Error('Upload failed')
 
       const data = await res.json()
-      toast.success('Tải ảnh lên thành công!', { id: toastId })
+      toast.success('Tải media lên thành công!', { id: toastId })
       
       // Select the new image immediately and close
       onSelect(data.url)
@@ -84,8 +90,8 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
           <div className="flex items-center gap-2">
             <label className="cursor-pointer bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-1 transition-colors">
               <UploadCloud size={16} />
-              {isUploading ? 'Đang tải...' : 'Tải ảnh lên'}
-              <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isUploading} />
+              {isUploading ? 'Đang tải...' : 'Tải media lên'}
+              <input type="file" className="hidden" accept="image/*,video/*" onChange={handleUpload} disabled={isUploading} />
             </label>
             <button onClick={fetchFiles} className="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors" title="Làm mới">
               <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
@@ -119,8 +125,15 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
                     ${selectedUrl === file.url ? 'border-blue-500 shadow-[0_0_0_2px_rgba(59,130,246,0.2)]' : 'border-transparent hover:border-blue-300'}
                   `}
                 >
-                  {/* Sử dụng loading="lazy" để tăng hiệu suất cho hàng ngàn ảnh */}
-                  <img src={file.url} alt={file.name} loading="lazy" className="w-full h-full object-cover" />
+                  {/* Thumbnail: video hoặc ảnh */}
+                  {isVideoFile(file.name, (file as any).contentType) ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white/80">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      <span className="text-[10px] mt-1 font-medium">{file.name.split('.').pop()?.toUpperCase()}</span>
+                    </div>
+                  ) : (
+                    <img src={file.url} alt={file.name} loading="lazy" className="w-full h-full object-cover" />
+                  )}
                   
                   {selectedUrl === file.url && (
                     <div className="absolute top-1 right-1 bg-blue-500 text-white rounded-full p-0.5">
@@ -140,7 +153,7 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
         {/* Footer */}
         <div className="border-t border-gray-100 p-4 flex justify-between items-center bg-white">
           <p className="text-sm text-gray-500">
-            {selectedUrl ? '1 ảnh đang chọn' : `Tổng cộng ${files.length} ảnh`}
+            {selectedUrl ? '1 file đang chọn' : `Tổng cộng ${files.length} file`}
           </p>
           <div className="flex gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
@@ -156,7 +169,7 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, folder = 
               disabled={!selectedUrl}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Chọn ảnh này
+              Chọn file này
             </button>
           </div>
         </div>

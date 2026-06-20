@@ -36,7 +36,7 @@ export default function Sidebar({
   return (
     <div className="flex h-full w-64 flex-col border-r border-gray-200 bg-slate-50 shadow-sm">
       <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-5">
-        <Image src="/logo.svg" alt="Logo" width={32} height={32} />
+        <Image src="/logo.png" alt="Logo" width={32} height={32} />
         <div className="flex flex-col">
           <h1 className="text-[17px] font-black tracking-tight text-slate-900 leading-none">{BRAND.name}</h1>
           <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{BRAND.sidebarSubtitle}</span>

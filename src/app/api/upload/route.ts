@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server'
 import { WebdavAdapter } from '@/lib/webdav-adapter'
 import { getSession } from '@/lib/auth'
 
-// Route segment config: tăng limit cho upload file lớn (video)
-export const maxDuration = 300 // 5 minutes
+// Route segment config: tắt body size limit mặc định (~4MB) để cho phép upload video lớn
+export const maxDuration = 300 // 5 minutes (cho chunked upload / video lớn)
+
+// Tắt body parser mặc định của Next.js, xử lý stream trực tiếp
+// Điều này bỏ giới hạn 4MB mặc định của API Routes
+export const dynamic = 'force-dynamic'
 
 
 const ALLOWED_IMAGE_TYPES = [

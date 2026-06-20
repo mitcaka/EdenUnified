@@ -80,20 +80,62 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
     }
   }, [editorId])
 
+  const videoHandler = useCallback(() => {
+    const input = document.createElement('input')
+    input.setAttribute('type', 'file')
+    input.setAttribute('accept', 'video/*')
+    input.click()
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null
+      if (!file) return
+
+      const sizeMB = (file.size / 1024 / 1024).toFixed(0)
+      const toastId = toast.loading(`Đang tải video lên Cloud... (${sizeMB}MB)`)
+
+      try {
+        const url = `/api/upload?raw=true&folder=CMS_Media&name=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type || '')}`
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          body: file,
+          headers: { 'Content-Type': file.type || 'application/octet-stream' }
+        })
+
+        if (!response.ok) throw new Error('Upload thất bại')
+
+        const data = await response.json()
+        // Chèn thẻ video có controls vào editor
+        const container = document.getElementById(editorId)
+        const qlEditor = container?.querySelector('.ql-editor')
+        if (qlEditor) {
+          qlEditor.innerHTML += `<video src="${data.url}" controls style="max-width:100%;border-radius:8px;margin:1rem 0;"></video>`
+          qlEditor.dispatchEvent(new Event('input', { bubbles: true }))
+        }
+
+        toast.success('Tải video thành công!', { id: toastId })
+      } catch (error) {
+        console.error(error)
+        toast.error('Có lỗi khi tải video', { id: toastId })
+      }
+    }
+  }, [editorId])
+
   const modules = useMemo(() => ({
     toolbar: {
       container: [
         [{ 'header': [1, 2, 3, 4, false] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['link', 'image'],
+        ['link', 'image', 'video'],
         ['clean']
       ],
       handlers: {
-        image: imageHandler
+        image: imageHandler,
+        video: videoHandler,
       }
     }
-  }), [imageHandler])
+  }), [imageHandler, videoHandler])
 
   return (
     <div id={editorId} className="rich-text-editor-wrapper relative">

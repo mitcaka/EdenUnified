@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: BRAND.tagline,
   applicationName: BRAND.name,
   icons: {
-    icon: '/favicon.svg',
+    icon: '/logo.png',
   },
 };
 

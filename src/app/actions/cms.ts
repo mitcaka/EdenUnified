@@ -290,6 +290,30 @@ export async function createMedia(formData: FormData) {
   redirect('/admin/content/gallery')
 }
 
+/** Server Action không redirect — dùng cho Client Component (GalleryUploadForm) */
+export async function createMediaItem(formData: FormData): Promise<{ ok: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    await prisma.mediaItem.create({
+      data: {
+        title: formData.get('title') as string,
+        description: (formData.get('description') as string) || null,
+        type: formData.get('type') as string || 'image',
+        mediaUrl: formData.get('mediaUrl') as string,
+        thumbnailUrl: (formData.get('thumbnailUrl') as string) || null,
+        tags: (formData.get('tags') as string) || null,
+        isFeatured: formData.get('isFeatured') === 'on',
+        sortOrder: parseInt(formData.get('sortOrder') as string || '0'),
+      }
+    })
+    revalidatePath('/admin/content/gallery')
+    revalidatePath('/gallery')
+    return { ok: true }
+  } catch (e: any) {
+    return { ok: false, error: e.message }
+  }
+}
+
 export async function deleteMedia(formData: FormData) {
   await requireAdmin()
   await prisma.mediaItem.delete({ where: { id: parseInt(formData.get('id') as string) } })

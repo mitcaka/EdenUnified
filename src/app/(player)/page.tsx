@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { PageShell } from '@/components/player/PlayerComponents'
-import { HeroSection, PillarCards, NewsCards } from './HomeClient'
+import { HeroSection, NewsCards } from './HomeClient'
 
 async function getSettings() {
   const rows = await prisma.siteSetting.findMany()
@@ -25,7 +25,7 @@ export default async function HomePage() {
     <PageShell>
       <HeroSection settings={settings} />
       <LeaderboardWidget />
-      <PillarCards />
+
 
       {/* LATEST NEWS */}
       <section className="mb-8">

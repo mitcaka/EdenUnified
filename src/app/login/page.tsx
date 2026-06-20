@@ -18,7 +18,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <div className="w-full max-w-sm space-y-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-200">
         <div className="flex flex-col items-center">
-          <Image src="/logo.svg" alt="TaskForge Logo" width={56} height={56} className="mb-4" />
+          <Image src="/logo.png" alt="TaskForge Logo" width={56} height={56} className="mb-4" />
           <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900">
             {BRAND.name}
           </h2>

@@ -20,15 +20,16 @@ interface EvidenceUploadProps {
   folder?: string
 }
 
-function isImageUrl(url: string): boolean {
-  const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
-  return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
-    || url.includes('/api/media/') && !isVideoUrl(url)
-}
-
 function isVideoUrl(url: string): boolean {
   const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
   return ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
+}
+
+function isImageUrl(url: string): boolean {
+  const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
+  // BUG FIX: thêm dấu ngoặc để tránh operator precedence sai (&&  trước ||)
+  return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
+    || (url.includes('/api/media/') && !isVideoUrl(url))
 }
 
 function detectType(url: string): 'image' | 'video' | 'url' {
@@ -159,13 +160,13 @@ export default function EvidenceUpload({
             {uploadingCount > 0 ? (
               <><Loader2 size={15} className="animate-spin" /> Đang upload {uploadingCount} file...</>
             ) : (
-              <><Upload size={15} /> Upload ảnh (Tạm đóng Video)</>
+              <><Upload size={15} /> Upload ảnh / Video</>
             )}
             <input
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept="image/*"
+              accept="image/*,video/*"
               multiple
               onChange={handleFileChange}
               disabled={uploadingCount > 0}
@@ -200,7 +201,7 @@ export default function EvidenceUpload({
         )}
 
         <p className="text-[11px] text-gray-400 mt-2">
-          Hỗ trợ: JPG, PNG, GIF, WEBP · Kéo thả hoặc Ctrl+V để dán ảnh (Video hiện đang bảo trì)
+          Hỗ trợ: JPG, PNG, GIF, WEBP, MP4, WEBM · Kéo thả hoặc Ctrl+V để dán ảnh/video
         </p>
       </div>
 

@@ -77,7 +77,7 @@ export class WebdavAdapter {
     for (let i = 0; i < retries; i++) {
       try {
         const response = await fetch(url, fetchOptions)
-        if (!response.ok && ![200, 201, 204, 207].includes(response.status)) {
+        if (!response.ok && ![200, 201, 204, 206, 207].includes(response.status)) {
           if (method === 'MKCOL' && response.status === 405) {
             return response // Directory already exists
           }

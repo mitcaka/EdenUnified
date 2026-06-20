@@ -18,7 +18,7 @@ export function HeroSection({ settings }: { settings: Record<string, string> }) 
       />
       <div className="relative px-6 md:px-12 py-20 md:py-32">
         <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-xs uppercase tracking-[0.3em] text-player-primary mb-4 font-bold">
-          Nhập vai có xét duyệt · Thế giới liên tục
+          Thế giới mở rộng lớn - vô hạn lưu
         </motion.p>
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="text-6xl md:text-8xl font-bold uppercase tracking-wide leading-none max-w-4xl text-white drop-shadow-lg" style={{ fontFamily: "'Oswald', 'Inter', sans-serif" }}>
           {settings.server_name ?? 'EDEN PZ'}
