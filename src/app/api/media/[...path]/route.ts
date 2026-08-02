@@ -22,6 +22,9 @@ const CONTENT_TYPE_MAP: Record<string, string> = {
   wav: 'audio/wav',
   // Docs
   pdf: 'application/pdf',
+  md: 'text/markdown; charset=utf-8',
+  txt: 'text/plain; charset=utf-8',
+  csv: 'text/csv; charset=utf-8',
 }
 
 export async function GET(

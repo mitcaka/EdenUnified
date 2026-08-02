@@ -10,6 +10,8 @@ import {
   submitTaskForReview,
 } from '@/app/actions/progress'
 
+import RichTextEditor from '@/components/ui/RichTextEditor'
+
 interface ProgressFormProps {
   taskId: string
   taskStatus: string
@@ -31,12 +33,10 @@ export default function ProgressUpdateForm({ taskId, taskStatus, isAssignee, isO
         <input type="hidden" name="taskId" value={taskId} />
 
         <div>
-          <textarea
-            name="content"
-            required
-            rows={3}
+          <RichTextEditor 
+            name="content" 
             placeholder="Ghi chú cập nhật tiến độ của bạn..."
-            className="block w-full rounded-xl border-gray-200 bg-gray-50/50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all"
+            minHeight="150px"
           />
         </div>
 

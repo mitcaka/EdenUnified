@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useId } from 'react'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import 'react-quill-new/dist/quill.snow.css'
@@ -20,12 +20,18 @@ interface RichTextEditorProps {
   name: string
   defaultValue?: string
   placeholder?: string
+  minHeight?: string
 }
 
-export default function RichTextEditor({ name, defaultValue = '', placeholder = 'Viết nội dung (có thể chèn link, ảnh...)' }: RichTextEditorProps) {
+export default function RichTextEditor({ 
+  name, 
+  defaultValue = '', 
+  placeholder = 'Viết nội dung (có thể chèn link, ảnh...)',
+  minHeight = '350px'
+}: RichTextEditorProps) {
   const [content, setContent] = useState(defaultValue)
-  // Store quill instance via onMount workaround (dynamic import doesn't support ref forwarding)
-  const editorId = useMemo(() => `quill-editor-${Math.random().toString(36).slice(2)}`, [])
+  const reactId = useId()
+  const editorId = useMemo(() => `quill-editor-${reactId.replace(/:/g, '')}`, [reactId])
 
   const imageHandler = useCallback(() => {
     const input = document.createElement('input')
@@ -146,7 +152,7 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
         onChange={setContent}
         modules={modules}
         placeholder={placeholder}
-        className="bg-white rounded-md flex flex-col h-full min-h-[400px]"
+        className="bg-white rounded-md flex flex-col h-full"
       />
 
       <style jsx global>{`
@@ -170,7 +176,7 @@ export default function RichTextEditor({ name, defaultValue = '', placeholder = 
         .rich-text-editor-wrapper .ql-container.ql-snow {
           border: none;
           flex: 1;
-          min-height: 350px;
+          min-height: ${minHeight};
           font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
           font-size: 15px;
         }

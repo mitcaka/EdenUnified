@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { ArrowLeft, Clock, Activity, MessageSquare, AlertCircle, FileText, CheckCircle, RefreshCcw, Edit, XCircle, ImageIcon, Film, Link2 } from 'lucide-react'
 import SubmitButton from '@/components/ui/SubmitButton'
 import ProgressUpdateForm from './ProgressUpdateForm'
+import DocumentPreview from '@/components/ui/DocumentPreview'
+import DocumentViewerGroup from '@/components/ui/DocumentViewerGroup'
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import {
   reviewTaskDone,
   requestTaskChanges
@@ -89,8 +92,19 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{task.title}</h2>
 
             <div className="prose prose-sm max-w-none text-gray-600 mb-6 bg-gray-50 rounded-xl p-4 border border-gray-100 min-h-[100px] whitespace-pre-wrap">
-              {task.description || <span className="italic text-gray-400">Không có mô tả</span>}
+              {task.description ? (
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(task.description) }} />
+              ) : (
+                <span className="italic text-gray-400">Không có mô tả</span>
+              )}
             </div>
+
+            {task.evidenceUrl && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Tệp đính kèm công việc</h3>
+                <EvidenceDisplay evidenceUrls={task.evidenceUrl} />
+              </div>
+            )}
           </div>
 
           {/* Form cập nhật tiến độ — Client Component */}
@@ -160,8 +174,8 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
                         </div>
                       )}
 
-                      <div className={`text-sm text-gray-700 whitespace-pre-wrap p-3 rounded-xl border ${update.type === 'REVIEW_NOTE' ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
-                        {update.content}
+                      <div className={`text-sm text-gray-700 whitespace-pre-wrap p-3 rounded-xl border prose prose-sm max-w-none ${update.type === 'REVIEW_NOTE' ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(update.content) }} />
                       </div>
 
                       {/* Evidence — inline media preview */}
@@ -258,12 +272,17 @@ function EvidenceDisplay({ evidenceUrls }: { evidenceUrls: string }) {
     const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
     // BUG FIX: thêm dấu ngoặc để tránh operator precedence sai (&& chạy trước ||)
     return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
-      || (url.includes('/api/media/') && !isVideo(url))
+      || (url.includes('/api/media/') && !isVideo(url) && !isDocument(url))
+  }
+  const isDocument = (url: string) => {
+    const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
+    return ['md', 'txt', 'csv', 'pdf'].includes(ext)
   }
 
   const images = links.filter(isImage)
   const videos = links.filter(isVideo)
-  const urls = links.filter(u => !isImage(u) && !isVideo(u))
+  const documents = links.filter(isDocument)
+  const urls = links.filter(u => !isImage(u) && !isVideo(u) && !isDocument(u))
 
   return (
     <div className="mt-3 space-y-3">
@@ -305,6 +324,16 @@ function EvidenceDisplay({ evidenceUrls }: { evidenceUrls: string }) {
               />
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Documents */}
+      {documents.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+            <span>📄</span> Tài liệu đính kèm
+          </p>
+          <DocumentViewerGroup urls={documents} />
         </div>
       )}
 

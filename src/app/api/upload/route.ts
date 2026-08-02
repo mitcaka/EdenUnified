@@ -18,7 +18,10 @@ const ALLOWED_VIDEO_TYPES = [
   'video/mp4', 'video/webm', 'video/quicktime', 'video/x-matroska',
   'video/avi', 'video/x-msvideo',
 ]
-const ALLOWED_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES]
+const ALLOWED_DOC_TYPES = [
+  'text/plain', 'text/markdown', 'text/csv', 'application/pdf'
+]
+const ALLOWED_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES, ...ALLOWED_DOC_TYPES]
 
 // MEMBER chỉ được upload vào các folder được phép này
 const MEMBER_ALLOWED_FOLDERS = ['Team_Media/tasks']
@@ -86,10 +89,12 @@ export async function POST(request: Request) {
     const isImage = ALLOWED_IMAGE_TYPES.includes(mimeType)
     const isVideo = ALLOWED_VIDEO_TYPES.includes(mimeType) ||
       ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
+    const isDoc = ALLOWED_DOC_TYPES.includes(mimeType) ||
+      ['md', 'txt', 'csv', 'pdf'].includes(ext)
 
-    if (!isImage && !isVideo) {
+    if (!isImage && !isVideo && !isDoc) {
       return NextResponse.json(
-        { error: `Loại file không được hỗ trợ: ${mimeType || ext}. Chỉ chấp nhận ảnh và video.` },
+        { error: `Loại file không được hỗ trợ: ${mimeType || ext}. Chỉ chấp nhận ảnh, video, PDF, TXT, MD, CSV.` },
         { status: 400 }
       )
     }
@@ -114,7 +119,7 @@ export async function POST(request: Request) {
       remotePath,
       name: newFileName,
       size: size,
-      type: isVideo ? 'video' : 'image',
+      type: isVideo ? 'video' : isImage ? 'image' : 'document',
     })
   } catch (error) {
     console.error('Upload error:', error)

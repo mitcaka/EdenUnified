@@ -5,6 +5,8 @@ import { getSession } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import { ArrowLeft, Save, Layout, AlignLeft, Settings, Link as LinkIcon, Folder, Users, AlertCircle, Clock } from 'lucide-react'
 import SubmitButton from '@/components/ui/SubmitButton'
+import RichTextEditor from '@/components/ui/RichTextEditor'
+import EvidenceUpload from '@/components/ui/EvidenceUpload'
 
 export default async function EditTaskPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -55,10 +57,13 @@ export default async function EditTaskPage({ params }: { params: Promise<{ id: s
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả chi tiết</label>
-                <div className="relative">
-                  <AlignLeft className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <textarea name="description" rows={5} defaultValue={task.description || ''} disabled={!canEdit} className="block w-full rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all disabled:opacity-60 disabled:cursor-not-allowed"></textarea>
-                </div>
+                {!canEdit ? (
+                  <div className="prose prose-sm max-w-none bg-gray-50/50 border border-gray-200 rounded-xl p-4 text-gray-600 min-h-[100px] opacity-60">
+                    <div dangerouslySetInnerHTML={{ __html: task.description || 'Không có mô tả' }} />
+                  </div>
+                ) : (
+                  <RichTextEditor name="description" defaultValue={task.description || ''} placeholder="Nhập mô tả công việc..." minHeight="200px" />
+                )}
               </div>
             </div>
           </div>
@@ -71,8 +76,14 @@ export default async function EditTaskPage({ params }: { params: Promise<{ id: s
             
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Evidence URL (Link tài liệu, ảnh...)</label>
-                <input name="evidenceUrl" type="url" defaultValue={task.evidenceUrl || ''} disabled={!canEdit} placeholder="https://" className="block w-full rounded-xl border-gray-200 bg-gray-50/50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all disabled:opacity-60 disabled:cursor-not-allowed" />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tệp đính kèm (Tài liệu, ảnh, video...)</label>
+                {!canEdit ? (
+                  <div className="text-sm text-gray-500 border rounded-xl p-3 bg-gray-50 opacity-60 break-all">
+                    {task.evidenceUrl || 'Không có đính kèm'}
+                  </div>
+                ) : (
+                  <EvidenceUpload name="evidenceUrl" defaultValue={task.evidenceUrl || ''} folder="Team_Media/tasks" />
+                )}
               </div>
             </div>
           </div>

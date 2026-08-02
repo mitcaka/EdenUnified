@@ -33,7 +33,7 @@ export const TaskSchema = z.object({
   status: z.enum(['BACKLOG', 'TODO', 'DOING', 'NEED_REVIEW', 'NEED_TEST', 'DONE', 'CANCELLED']).default('TODO'),
   priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).default('MEDIUM'),
   category: z.string().optional(),
-  evidenceUrl: z.string().url('Đường dẫn không hợp lệ').optional().or(z.literal('')),
+  evidenceUrl: z.string().optional().or(z.literal('')),
   projectId: z.string().min(1, 'Vui lòng chọn dự án'),
   assigneeId: z.string().optional().or(z.literal('')),
   reviewerId: z.string().optional().or(z.literal('')),

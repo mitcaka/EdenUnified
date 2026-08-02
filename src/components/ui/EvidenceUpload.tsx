@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
-import { Upload, X, Link2, Image as ImageIcon, Video, Film, Plus, Loader2 } from 'lucide-react'
+import { Upload, X, Link2, Image as ImageIcon, Video, Film, Plus, Loader2, FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export interface EvidenceItem {
-  type: 'url' | 'image' | 'video'
+  type: 'url' | 'image' | 'video' | 'document'
   value: string       // URL (proxy for uploaded, or external URL)
   name?: string       // display name
   remotePath?: string // only for uploaded files
@@ -25,15 +25,21 @@ function isVideoUrl(url: string): boolean {
   return ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
 }
 
+function isDocumentUrl(url: string): boolean {
+  const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
+  return ['md', 'txt', 'csv', 'pdf'].includes(ext)
+}
+
 function isImageUrl(url: string): boolean {
   const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
   // BUG FIX: thêm dấu ngoặc để tránh operator precedence sai (&&  trước ||)
   return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
-    || (url.includes('/api/media/') && !isVideoUrl(url))
+    || (url.includes('/api/media/') && !isVideoUrl(url) && !isDocumentUrl(url))
 }
 
-function detectType(url: string): 'image' | 'video' | 'url' {
+function detectType(url: string): 'image' | 'video' | 'document' | 'url' {
   if (isVideoUrl(url)) return 'video'
+  if (isDocumentUrl(url)) return 'document'
   if (isImageUrl(url)) return 'image'
   return 'url'
 }
@@ -95,7 +101,7 @@ export default function EvidenceUpload({
         }
         const data = await res.json()
         results.push({
-          type: data.type === 'video' ? 'video' : 'image',
+          type: data.type === 'video' ? 'video' : data.type === 'document' ? 'document' : 'image',
           value: data.url,
           name: data.name,
           remotePath: data.remotePath,
@@ -122,14 +128,14 @@ export default function EvidenceUpload({
     e.preventDefault()
     setIsDragging(false)
     const files = Array.from(e.dataTransfer.files).filter(
-      f => f.type.startsWith('image/') || f.type.startsWith('video/')
+      f => f.type.startsWith('image/') || f.type.startsWith('video/') || f.type.startsWith('text/') || f.type === 'application/pdf' || f.name.endsWith('.md') || f.name.endsWith('.txt') || f.name.endsWith('.csv')
     )
     if (files.length > 0) uploadFiles(files)
   }
 
   const handlePaste = (e: React.ClipboardEvent) => {
     const files = Array.from(e.clipboardData.files).filter(
-      f => f.type.startsWith('image/') || f.type.startsWith('video/')
+      f => f.type.startsWith('image/') || f.type.startsWith('video/') || f.type.startsWith('text/') || f.type === 'application/pdf' || f.name.endsWith('.md') || f.name.endsWith('.txt') || f.name.endsWith('.csv')
     )
     if (files.length > 0) {
       e.preventDefault()
@@ -160,13 +166,13 @@ export default function EvidenceUpload({
             {uploadingCount > 0 ? (
               <><Loader2 size={15} className="animate-spin" /> Đang upload {uploadingCount} file...</>
             ) : (
-              <><Upload size={15} /> Upload ảnh / Video</>
+              <><Upload size={15} /> Upload Tệp / Ảnh</>
             )}
             <input
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept="image/*,video/*"
+              accept="image/*,video/*,text/plain,text/markdown,text/csv,application/pdf,.md,.txt,.csv"
               multiple
               onChange={handleFileChange}
               disabled={uploadingCount > 0}
@@ -201,7 +207,7 @@ export default function EvidenceUpload({
         )}
 
         <p className="text-[11px] text-gray-400 mt-2">
-          Hỗ trợ: JPG, PNG, GIF, WEBP, MP4, WEBM · Kéo thả hoặc Ctrl+V để dán ảnh/video
+          Hỗ trợ: Ảnh, Video, PDF, TXT, MD, CSV · Kéo thả hoặc Ctrl+V để dán file
         </p>
       </div>
 
@@ -216,6 +222,10 @@ export default function EvidenceUpload({
                   <img src={item.value} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
                 ) : item.type === 'video' ? (
                   <video src={item.value} className="w-full h-full object-cover" muted preload="metadata" />
+                ) : item.type === 'document' ? (
+                  <div className="w-full h-full flex items-center justify-center text-blue-500 bg-blue-50">
+                    <FileText size={24} />
+                  </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">
                     <Link2 size={20} />
@@ -233,6 +243,10 @@ export default function EvidenceUpload({
                   ) : item.type === 'video' ? (
                     <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full flex items-center gap-1">
                       <Film size={8} /> Video
+                    </span>
+                  ) : item.type === 'document' ? (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                      <FileText size={8} /> Tài liệu
                     </span>
                   ) : (
                     <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full flex items-center gap-1">
