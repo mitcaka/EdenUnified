@@ -320,3 +320,133 @@ body {
   animation: slideUpModal 0.2s ease;
 }
 
+/* ─── Tiptap Discord Editor ──────────────────────────────────────────────── */
+
+/* Placeholder */
+.discord-editor p.is-editor-empty:first-child::before {
+  color: #9ca3af;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Base editor content */
+.discord-editor {
+  min-height: 220px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+/* Paragraphs */
+.discord-editor p {
+  margin: 0.15em 0;
+}
+
+/* Headings */
+.discord-editor h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0.25rem;
+  color: #111827;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.25rem;
+}
+.discord-editor h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0.4rem 0 0.2rem;
+  color: #111827;
+}
+.discord-editor h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.4rem 0 0.2rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Spoiler mark */
+.discord-editor [data-spoiler] {
+  background: #1f2937;
+  color: #1f2937;
+  border-radius: 3px;
+  padding: 0 2px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  user-select: text;
+}
+.discord-editor [data-spoiler]:hover {
+  background: #374151;
+  color: #f9fafb;
+}
+
+/* Inline code */
+.discord-editor code {
+  background: #f3f4f6;
+  color: #e11d48;
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Code block */
+.discord-editor pre {
+  background: #2b2d31;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+.discord-editor pre code {
+  background: transparent;
+  color: #dcddde;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Blockquote */
+.discord-editor blockquote {
+  border-left: 4px solid #5865f2;
+  background: #f5f5ff;
+  padding: 0.4rem 0.75rem;
+  margin: 0.4rem 0;
+  border-radius: 0 6px 6px 0;
+  color: #3730a3;
+}
+.discord-editor blockquote p {
+  margin: 0;
+}
+
+/* Lists */
+.discord-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.3rem 0;
+}
+.discord-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.3rem 0;
+}
+.discord-editor li {
+  margin: 0.1rem 0;
+}
+
+/* Horizontal Rule */
+.discord-editor hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 0.75rem 0;
+}
+
+/* Focus ring on editor wrapper */
+.discord-editor:focus-within {
+  outline: none;
+}

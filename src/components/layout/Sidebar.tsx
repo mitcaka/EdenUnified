@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity, FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Users, FolderKanban, FileBarChart, LogOut, Settings, FileText, Activity, FolderOpen, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 
 import Image from 'next/image'
@@ -16,6 +16,7 @@ const navigation = [
   { name: 'Báo cáo', href: '/admin/reports', icon: FileBarChart },
   { name: 'Nội dung', href: '/admin/content', icon: FileText },
   { name: 'Media Hub', href: '/admin/media', icon: FolderOpen, adminOnly: true },
+  { name: 'Discord Composer', href: '/admin/discord', icon: MessageSquare },
   { name: 'Server Logs', href: '/admin/logs', icon: Activity },
 ]
 
