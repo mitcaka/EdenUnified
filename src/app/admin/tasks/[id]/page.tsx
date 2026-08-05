@@ -8,6 +8,7 @@ import ProgressUpdateForm from './ProgressUpdateForm'
 import DocumentPreview from '@/components/ui/DocumentPreview'
 import DocumentViewerGroup from '@/components/ui/DocumentViewerGroup'
 import { sanitizeHtml } from '@/lib/sanitize-html'
+import ImageLightbox from '@/components/ui/ImageLightbox'
 import {
   reviewTaskDone,
   requestTaskChanges
@@ -268,15 +269,15 @@ function EvidenceDisplay({ evidenceUrls }: { evidenceUrls: string }) {
     const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
     return ['mp4', 'webm', 'mov', 'mkv', 'avi'].includes(ext)
   }
+  const isDocument = (url: string) => {
+    const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
+    return ['md', 'txt', 'csv', 'pdf'].includes(ext)
+  }
   const isImage = (url: string) => {
     const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
     // BUG FIX: thêm dấu ngoặc để tránh operator precedence sai (&& chạy trước ||)
     return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'].includes(ext)
       || (url.includes('/api/media/') && !isVideo(url) && !isDocument(url))
-  }
-  const isDocument = (url: string) => {
-    const ext = url.split('?')[0].split('.').pop()?.toLowerCase() || ''
-    return ['md', 'txt', 'csv', 'pdf'].includes(ext)
   }
 
   const images = links.filter(isImage)
@@ -285,43 +286,34 @@ function EvidenceDisplay({ evidenceUrls }: { evidenceUrls: string }) {
   const urls = links.filter(u => !isImage(u) && !isVideo(u) && !isDocument(u))
 
   return (
-    <div className="mt-3 space-y-3">
-      {/* Images grid */}
+    <div className="mt-3 space-y-4">
+      {/* Images grid — lightbox on click */}
       {images.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
             <span>📸</span> Ảnh minh chứng
+            <span className="normal-case font-normal text-gray-300 ml-1">(click để phóng to)</span>
           </p>
-          <div className={`grid gap-2 ${images.length === 1 ? 'grid-cols-1' : images.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-            {images.map((url, i) => (
-              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block">
-                <img
-                  src={url}
-                  alt={`Minh chứng ${i + 1}`}
-                  loading="lazy"
-                  className="w-full rounded-lg border border-gray-200 object-cover max-h-48 hover:opacity-90 transition-opacity"
-                />
-              </a>
-            ))}
-          </div>
+          <ImageLightbox images={images} />
         </div>
       )}
 
-      {/* Videos */}
+      {/* Videos — larger */}
       {videos.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
             <span>🎬</span> Video minh chứng
           </p>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {videos.map((url, i) => (
-              <video
-                key={i}
-                src={url}
-                controls
-                className="w-full rounded-lg border border-gray-200 max-h-64 bg-black"
-                preload="metadata"
-              />
+              <div key={i} className="rounded-xl overflow-hidden border border-gray-200 bg-black shadow-sm">
+                <video
+                  src={url}
+                  controls
+                  className="w-full max-h-[480px]"
+                  preload="metadata"
+                />
+              </div>
             ))}
           </div>
         </div>

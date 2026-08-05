@@ -104,7 +104,7 @@ export async function POST(request: Request) {
       .replace(/\.[^/.]+$/, '') // remove extension
       .replace(/[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF\-_.]/g, '_')
       .slice(0, 60)
-    const newFileName = `${Date.now()}-${safeBaseName}.${ext}`
+    const newFileName = `${safeBaseName}-${Date.now()}.${ext}`
     const remotePath = `${folder}/${newFileName}`
 
     const webdav = new WebdavAdapter()

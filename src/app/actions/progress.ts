@@ -49,8 +49,9 @@ export async function addTaskProgressUpdate(formData: FormData) {
     })
   })
 
-  revalidatePath(`/tasks/${taskId}`)
-  revalidatePath('/tasks')
+  revalidatePath(`/admin/tasks/${taskId}`)
+  revalidatePath('/admin/tasks')
+  revalidatePath('/admin')
   revalidatePath('/')
 }
 
@@ -105,8 +106,9 @@ export async function submitTaskForTest(formData: FormData) {
   // Discord webhook
   await sendTaskReviewRequestedNotification(taskId, session.id, content.trim(), !!evidenceUrls)
 
-  revalidatePath(`/tasks/${taskId}`)
-  revalidatePath('/tasks')
+  revalidatePath(`/admin/tasks/${taskId}`)
+  revalidatePath('/admin/tasks')
+  revalidatePath('/admin')
   revalidatePath('/')
 }
 
@@ -161,8 +163,9 @@ export async function submitTaskForReview(formData: FormData) {
   // Discord webhook
   await sendTaskReviewRequestedNotification(taskId, session.id, content.trim(), !!evidenceUrls)
 
-  revalidatePath(`/tasks/${taskId}`)
-  revalidatePath('/tasks')
+  revalidatePath(`/admin/tasks/${taskId}`)
+  revalidatePath('/admin/tasks')
+  revalidatePath('/admin')
   revalidatePath('/')
 }
 
@@ -223,8 +226,9 @@ export async function reviewTaskDone(formData: FormData) {
   // Discord webhook
   await sendTaskDoneNotification(taskId, session.id, pointActual, reviewNote?.trim())
 
-  revalidatePath(`/tasks/${taskId}`)
-  revalidatePath('/tasks')
+  revalidatePath(`/admin/tasks/${taskId}`)
+  revalidatePath('/admin/tasks')
+  revalidatePath('/admin')
   revalidatePath('/')
 }
 
@@ -281,7 +285,8 @@ export async function requestTaskChanges(formData: FormData) {
   // Discord webhook
   await sendTaskReturnedNotification(taskId, session.id, reviewNote.trim())
 
-  revalidatePath(`/tasks/${taskId}`)
-  revalidatePath('/tasks')
+  revalidatePath(`/admin/tasks/${taskId}`)
+  revalidatePath('/admin/tasks')
+  revalidatePath('/admin')
   revalidatePath('/')
 }

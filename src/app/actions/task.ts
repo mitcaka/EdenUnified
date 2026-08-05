@@ -65,9 +65,10 @@ export async function createTask(formData: FormData) {
     await sendTaskAssignedNotification(newTask.id, session.id)
   }
 
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   redirect('/admin/tasks')
 }
+
 
 export async function updateTask(id: string, formData: FormData) {
   const session = await getSession()
@@ -200,7 +201,7 @@ export async function updateTask(id: string, formData: FormData) {
     await sendTaskAssignedNotification(updatedTask.id, session.id)
   }
 
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   redirect('/admin/tasks')
 }
 
@@ -214,5 +215,5 @@ export async function deleteTask(id: string) {
   // Wait, the prompt asked for ActivityLog, Comment, schema update, dashboard, and Zod validate auth.
   // The plan didn't explicitly include soft delete in THIS phase (though it was mentioned as High in the audit report). Let's wait. Actually, the audit report says "Critical: Cập nhật schema.prisma: Thêm deletedAt (Soft delete)...". But wait! I didn't add deletedAt in schema.prisma in the plan! I only added ActivityLog and Comment. Ah, the plan specifically outlined what to do. I will just stick to the plan for now. The plan: "Sửa Server Action delete... chưa làm trong phase này nếu không có trong plan". Wait, it's better to stick to exactly what the user approved in the plan. The plan didn't mention `deletedAt` for Task.
   await prisma.task.delete({ where: { id } })
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
 }

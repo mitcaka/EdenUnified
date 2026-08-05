@@ -41,7 +41,7 @@ export async function startTask(taskId: string) {
 
   await logActivity(session.id, taskId, 'START_TASK', task.status, 'DOING')
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
 
@@ -69,7 +69,7 @@ export async function sendToTest(taskId: string) {
 
   await logActivity(session.id, taskId, 'SEND_TO_TEST', task.status, 'NEED_TEST')
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
 
@@ -97,7 +97,7 @@ export async function sendToReview(taskId: string) {
 
   await logActivity(session.id, taskId, 'SEND_TO_REVIEW', task.status, 'NEED_REVIEW')
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
 
@@ -132,7 +132,7 @@ export async function markDone(taskId: string) {
 
   await logActivity(session.id, taskId, 'MARK_DONE', task.status, 'DONE')
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
 
@@ -164,7 +164,7 @@ export async function returnToDoing(taskId: string) {
 
   await logActivity(session.id, taskId, 'RETURN_TO_DOING', task.status, 'DOING')
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
 
@@ -193,6 +193,6 @@ export async function quickAssignToSelf(taskId: string) {
   await sendTaskAssignedNotification(updatedTask.id, session.id)
   
   revalidatePath('/')
-  revalidatePath('/tasks')
+  revalidatePath('/admin/tasks')
   return { success: true }
 }
